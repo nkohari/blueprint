@@ -588,7 +588,7 @@ export class Table extends AbstractComponent<ITableProps, ITableState> {
                         </div>
                         <div className={Classes.TABLE_BOTTOM_CONTAINER}>
                             {this.renderRowHeader(0, numFrozenRows)}
-                            {this.renderBody(null, null, 0, numFrozenColumns, numFrozenColumns, numFrozenRows)}
+                            {this.renderBody(0, numFrozenRows, 0, numFrozenColumns, numFrozenColumns, numFrozenRows)}
                         </div>
                     </div>
                 </div>
@@ -644,7 +644,7 @@ export class Table extends AbstractComponent<ITableProps, ITableState> {
         this.validateGrid();
         this.locator = new Locator(
             this.rootTableElement,
-            this.bodyElement,
+            this.mainQuadrantScrollElement,
             this.grid,
         );
         this.setState({ viewportRect: this.locator.getViewportRect() });
@@ -720,12 +720,14 @@ export class Table extends AbstractComponent<ITableProps, ITableState> {
     // use the more generic "scroll" event for the main quadrant, which
     // captures both click+dragging on the scrollbar and
     // trackpad/mousewheel gestures
-    private handleMainQuadrantScroll = () => {
+    private handleMainQuadrantScroll = (event: React.UIEvent<HTMLElement>) => {
         const nextScrollTop = this.mainQuadrantScrollElement.scrollTop;
         const nextScrollLeft = this.mainQuadrantScrollElement.scrollLeft;
 
         this.leftQuadrantScrollElement.scrollTop = nextScrollTop;
         this.topQuadrantScrollElement.scrollLeft = nextScrollLeft;
+
+        this.handleBodyScroll(event);
     }
 
     // listen to the wheel event on the top quadrant, since the scroll bar isn't visible and thus
@@ -738,6 +740,8 @@ export class Table extends AbstractComponent<ITableProps, ITableState> {
         this.mainQuadrantScrollElement.scrollLeft = nextScrollLeft;
 
         this.leftQuadrantScrollElement.scrollTop = nextScrollTop;
+
+        this.handleBodyScroll(event);
     }
 
     private handleLeftQuadrantWheel = (event: React.WheelEvent<HTMLElement>) => {
@@ -748,6 +752,8 @@ export class Table extends AbstractComponent<ITableProps, ITableState> {
         this.mainQuadrantScrollElement.scrollLeft = nextScrollLeft;
 
         this.topQuadrantScrollElement.scrollLeft = nextScrollLeft;
+
+        this.handleBodyScroll(event);
     }
 
     private handleTopLeftQuadrantWheel = (event: React.WheelEvent<HTMLElement>) => {
@@ -759,6 +765,8 @@ export class Table extends AbstractComponent<ITableProps, ITableState> {
 
         this.leftQuadrantScrollElement.scrollTop = nextScrollTop;
         this.topQuadrantScrollElement.scrollLeft = nextScrollLeft;
+
+        this.handleBodyScroll(event);
     }
 
     private renderMenu(refHandler: (ref: HTMLElement) => void) {
@@ -1433,16 +1441,16 @@ export class Table extends AbstractComponent<ITableProps, ITableState> {
         }
     }
 
-    // private handleBodyScroll = (event: React.UIEvent<HTMLElement>) => {
-    //     // Prevent the event from propagating to avoid a resize event on the
-    //     // resize sensor.
-    //     event.stopPropagation();
+    private handleBodyScroll = (event: React.SyntheticEvent<HTMLElement>) => {
+        // Prevent the event from propagating to avoid a resize event on the
+        // resize sensor.
+        event.stopPropagation();
 
-    //     if (this.locator != null && !this.state.isLayoutLocked) {
-    //         const viewportRect = this.locator.getViewportRect();
-    //         this.setState({ viewportRect });
-    //     }
-    // }
+        if (this.locator != null && !this.state.isLayoutLocked) {
+            const viewportRect = this.locator.getViewportRect();
+            this.setState({ viewportRect });
+        }
+    }
 
     private handleColumnResizeGuide = (verticalGuides: number[]) => {
         this.setState({ verticalGuides } as ITableState);
