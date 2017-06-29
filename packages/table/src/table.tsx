@@ -520,12 +520,6 @@ export class Table extends AbstractComponent<ITableProps, ITableState> {
         //     {this.renderBody()}
         // </div>*/}
 
-        // width and height will be set later in componentDidMount and componentDidUpdate
-        const baseStyles = { position: "absolute", top: 0, left: 0, overflow: "hidden" };
-        const mainQuadrantStyles = { ...baseStyles, bottom: 0, right: 0 };
-        const topQuadrantStyles = { ...baseStyles, right: 0 };
-        const leftQuadrantStyles = { ...baseStyles, bottom: 0 };
-
         return (
             <div
                 className={classes}
@@ -542,7 +536,6 @@ export class Table extends AbstractComponent<ITableProps, ITableState> {
                     renderMenu={this.renderMainQuadrantMenu}
                     renderRowHeader={this.renderRowHeader}
                     scrollContainerRef={this.setMainQuadrantScrollRef}
-                    style={mainQuadrantStyles}
                 />
                 <TableQuadrant
                     onWheel={this.handleTopQuadrantWheel}
@@ -553,7 +546,6 @@ export class Table extends AbstractComponent<ITableProps, ITableState> {
                     renderMenu={this.renderTopQuadrantMenu}
                     renderRowHeader={this.renderRowHeader}
                     scrollContainerRef={this.setTopQuadrantScrollRef}
-                    style={topQuadrantStyles}
                 />
                 <TableQuadrant
                     onWheel={this.handleLeftQuadrantWheel}
@@ -564,7 +556,6 @@ export class Table extends AbstractComponent<ITableProps, ITableState> {
                     renderMenu={this.renderLeftQuadrantMenu}
                     renderRowHeader={this.renderRowHeader}
                     scrollContainerRef={this.setLeftQuadrantScrollRef}
-                    style={leftQuadrantStyles}
                 />
                 <TableQuadrant
                     onWheel={this.handleTopLeftQuadrantWheel}
@@ -575,7 +566,6 @@ export class Table extends AbstractComponent<ITableProps, ITableState> {
                     renderMenu={this.renderTopLeftQuadrantMenu}
                     renderRowHeader={this.renderRowHeader}
                     scrollContainerRef={this.setTopLeftQuadrantScrollRef}
-                    style={baseStyles}
                 />
 
                 <div className={classNames(Classes.TABLE_OVERLAY_LAYER, "bp-table-reordering-cursor-overlay")} />
